@@ -94,6 +94,8 @@ class TrainEval():
         return total_eval
 
     def start_training(self):
+        tf.set_random_seed(3) # set a specific seed
+
         best_perfs = self.best_perfs
         frames, labels, sids = self.data_provider.get_batch()
         predictions = self.predictions(frames)
@@ -138,6 +140,13 @@ class TrainEval():
             for epoch in range(self.num_epochs):
                 print('\n Start Training for epoch {}\n'.format(epoch + 1))
                 for batch in range(num_batches):
+                    # Print Information Start
+                    frames_print = tf.get_default_graph().get_tensor_by_name('Reshape_1:0')
+                    test = frames_print.eval()
+                    print(test.shape)
+                    sids_print = tf.get_default_graph().get_tensor_by_name('batch_1:2').eval()
+                    print(sids_print)
+                    # Print Information End
                     start_time = time.time()
                     _, step_loss, step_summary = sess.run([train_op, total_loss, merged_summaries])
                     time_step = time.time() - start_time
