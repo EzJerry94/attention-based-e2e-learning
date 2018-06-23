@@ -16,8 +16,8 @@ class AudioModel:
             audio_input = tf.reshape(frames, shape)
 
             with slim.arg_scope([slim.layers.conv2d], padding='SAME'):
-                net = slim.dropout(audio_input, is_training=self.is_training)
-                net = slim.layers.conv2d(net, conv_filters, (1, 20))
+                #net = slim.dropout(audio_input, is_training=self.is_training)
+                net = slim.layers.conv2d(audio_input, conv_filters, (1, 20))
 
                 # Subsampling of the signal to 8Khz
                 net = tf.nn.max_pool(
