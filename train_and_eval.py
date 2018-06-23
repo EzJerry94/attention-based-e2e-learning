@@ -139,6 +139,7 @@ class TrainEval():
             #Start training of the model
             for epoch in range(self.num_epochs):
                 print('\n Start Training for epoch {}\n'.format(epoch + 1))
+                loss_w = csv.writer(open(str(self.save_dir / "loss_info.txt"), "w"), delimiter=';')
                 for batch in range(num_batches):
                     # Print Information Start
                     frames_print = tf.get_default_graph().get_tensor_by_name('Reshape_1:0')
@@ -152,6 +153,7 @@ class TrainEval():
                     time_step = time.time() - start_time
                     print("Epoch {}/{}: Batch {}/{}: loss = {:.4f} ({:.2f} sec/step)".format(
                         epoch + 1, self.num_epochs, batch + 1, num_batches, step_loss, time_step))
+                    loss_w.writerow([batch, step_loss])
                     summary_writer.add_summary(step_summary, global_step=step)
                     step += 1
                 print('\n End of epoch {}'.format(epoch + 1))
