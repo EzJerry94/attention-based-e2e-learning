@@ -27,7 +27,7 @@ class TrainEval():
         self.metric = 'uar'
         old_perf_models = str(self.save_dir / "models_performance.txt")
         if Path(old_perf_models).exists():
-            r = list(csv.reader(open(old_perf_models, "r"), delimiter=':'))
+            r = list(csv.reader(open(old_perf_models, "r"), delimiter=';'))
             self.best_perfs = {x[0]:float(x[1]) for x in r}
         else:
             self.best_perfs = {str(x):float('-inf') for x in np.arange(self.save_top_k)}
