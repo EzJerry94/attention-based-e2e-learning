@@ -5,6 +5,7 @@ from train_and_eval import TrainEval
 from audio_model import AudioModel
 from rnn_model import RNNModel
 from fc_model import fully_connected
+from attention_model import AttentionModel
 
 
 class AttentionNet:
@@ -32,9 +33,10 @@ class AttentionNet:
         audio = AudioModel(is_training=True).create_model(frames)
         output_model = self._reshape_to_rnn(audio)
         rnn = RNNModel().create_model(output_model)
-        rnn = rnn[:, -1, :]
+        #rnn = rnn[:, -1, :]
+        attention = AttentionModel().create_model(rnn)
         num_outputs = self.data_provider.num_classes
-        outputs = fully_connected(rnn, num_outputs)
+        outputs = fully_connected(attention, num_outputs)
         return outputs
 
     def start_process(self):
