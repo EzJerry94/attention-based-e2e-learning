@@ -27,6 +27,7 @@ class AttentionNet:
 
     def get_data_provider(self):
         self.data_provider = DataProvider()
+        self.batch_size = self.data_provider.batch_size
 
     def get_model(self, frames):
         frames = self._reshape_to_conv(frames)
@@ -34,7 +35,7 @@ class AttentionNet:
         output_model = self._reshape_to_rnn(audio)
         rnn = RNNModel().create_model(output_model)
         #rnn = rnn[:, -1, :]
-        attention = AttentionModel().create_model(rnn)
+        attention = AttentionModel(self.batch_size).create_model(rnn)
         num_outputs = self.data_provider.num_classes
         outputs = fully_connected(attention, num_outputs)
         return outputs

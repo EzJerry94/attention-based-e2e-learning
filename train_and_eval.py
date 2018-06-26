@@ -142,12 +142,8 @@ class TrainEval():
                 loss_w = csv.writer(open(str(self.save_dir / "loss_info.txt"), "w"), delimiter=';')
                 for batch in range(num_batches):
                     # Print Information Start
-                    frames_print = tf.get_default_graph().get_tensor_by_name('Reshape_1:0')
-                    test = frames_print.eval()
-                    print(test.shape)
-                    sids_print = tf.get_default_graph().get_tensor_by_name('batch_1:2').eval()
-                    print(sids_print)
                     # Print Information End
+
                     start_time = time.time()
                     _, step_loss, step_summary = sess.run([train_op, total_loss, merged_summaries])
                     time_step = time.time() - start_time
