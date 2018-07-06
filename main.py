@@ -3,7 +3,8 @@ from pathlib import Path
 from data_provider import DataProvider
 from train_and_eval import TrainEval
 from cnn_model import CNNModel
-
+from rnn_model import RNNModel
+from attention_model import AttentionModel
 
 class AttentionNet:
 
@@ -18,6 +19,12 @@ class AttentionNet:
         num_featurs = frame_shape[-1]
         batch = -1
         frames = tf.reshape(frames, (batch, num_featurs))
+        return frames
+
+    def _reshape_to_rnn(self, frames):
+        batch_size, num_features = frames.get_shape().as_list()
+        seq_length = -1
+        frames = tf.reshape(frames, [2, seq_length, num_features])
         return frames
 
     def get_data_provider(self):
@@ -41,10 +48,12 @@ class AttentionNet:
         frames = self._reshape_to_conv(frames)
         cnn = CNNModel()
         cnn_output = cnn.create_model(frames)
-        output_model = self._reshape_to_rnn(audio)
-        rnn = RNNModel().create_model(output_model)
+        cnn_output = self._reshape_to_rnn(cnn_output)
+        rnn = RNNModel()
+        rnn_output = rnn.create_model(cnn_output)
         # rnn = rnn[:, -1, :]
-        attention = AttentionModel(self.batch_size).create_model(rnn)
+        attention = AttentionModel(self.batch_size)
+        attention_output = attention.create_model(rnn_output)
         num_outputs = self.data_provider.num_classes
         outputs = fully_connected(attention, num_outputs)
         return outputs
