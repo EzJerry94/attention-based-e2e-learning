@@ -1,4 +1,5 @@
 import tensorflow as tf
+slim = tf.contrib.slim
 
 
 class DataProvider():
