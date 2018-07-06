@@ -15,7 +15,7 @@ class CNNModel():
             weight1 = tf.get_variable("weight1", shape=[1, 20, 1, self.conv_filters], dtype=tf.float32,
                                       initializer=tf.contrib.layers.xavier_initializer())
             kernel1 = tf.nn.conv2d(cnn_input,weight1, strides=[1, 1, 1, 1], padding='SAME')
-            bias1 = tf.Variable(tf.constant(0.0, shape=[40]))
+            bias1 = tf.Variable(tf.zeros([40], dtype=tf.float32), name='bias1')
             conv1 = tf.nn.relu(tf.nn.bias_add(kernel1, bias1))
 
             # Subsampling of the signal to 8Khz
@@ -30,7 +30,7 @@ class CNNModel():
             weight2 = tf.get_variable("weight2", shape=[1, 40, 40, self.conv_filters], dtype=tf.float32,
                                       initializer=tf.contrib.layers.xavier_initializer())
             kernel2 = tf.nn.conv2d(max_pool1, weight2, strides=[1, 1, 1, 1], padding='SAME')
-            bias2 = tf.Variable(tf.constant(0.0, shape=[40]))
+            bias2 = tf.Variable(tf.zeros([40], dtype=tf.float32), name='bias2')
             conv2 = tf.nn.relu(tf.nn.bias_add(kernel2, bias2))
 
             reshape1 = tf.reshape(conv2, (-1, num_features // 2, self.conv_filters, 1))

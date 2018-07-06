@@ -8,7 +8,7 @@ class RNNModel():
         self.cell_type = 'gru'
 
     def create_model(self, inputs):
-        with tf.variable_scope("recurrent", reuse=tf.AUTO_REUSE):
+        with tf.variable_scope("rnn", reuse=tf.AUTO_REUSE):
             batch_size, seq_length, num_features = inputs.get_shape().as_list()
 
             def _get_cell():

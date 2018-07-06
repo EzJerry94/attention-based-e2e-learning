@@ -5,6 +5,7 @@ from train_and_eval import TrainEval
 from cnn_model import CNNModel
 from rnn_model import RNNModel
 from attention_model import AttentionModel
+from fc_model import FCModel
 
 class AttentionNet:
 
@@ -54,8 +55,8 @@ class AttentionNet:
         # rnn = rnn[:, -1, :]
         attention = AttentionModel(self.batch_size)
         attention_output = attention.create_model(rnn_output)
-        num_outputs = self.data_provider.num_classes
-        outputs = fully_connected(attention, num_outputs)
+        fc = FCModel(self.num_classes)
+        outputs = fc.create_model(attention_output)
         return outputs
 
     def start_process(self):
