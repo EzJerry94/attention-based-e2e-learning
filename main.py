@@ -14,6 +14,7 @@ class AttentionNet:
         self.batch_size = 2
         self.epochs = 2
         self.num_classes = 3
+        self.learning_rate = 0.0001
 
     def _reshape_to_conv(self, frames):
         frame_shape = frames.get_shape().as_list()
@@ -63,7 +64,7 @@ class AttentionNet:
         predictions = self.get_model
         self.get_data_provider()
         train_class = TrainEval(self.data_provider, predictions, self.batch_size, self.epochs,
-                                self.num_classes, self.sample_num)
+                                self.num_classes, self.sample_num, self.learning_rate)
         train_class.start_training()
 
 

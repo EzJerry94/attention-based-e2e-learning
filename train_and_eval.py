@@ -1,14 +1,16 @@
 import tensorflow as tf
+import numpy as np
 
 class TrainEval():
 
-    def __init__(self, data_provider, predictions, batch_size, epochs, num_classes, sample_num):
+    def __init__(self, data_provider, predictions, batch_size, epochs, num_classes, sample_num, learning_rate):
         self.data_provider = data_provider
         self.predictions = predictions
         self.batch_size = batch_size
         self.epochs = epochs
         self.num_classes = num_classes
         self.sample_num = sample_num
+        self.learning_rate = learning_rate
 
     def start_training(self):
         g = tf.Graph()
@@ -23,12 +25,15 @@ class TrainEval():
             frames = tf.reshape(frames, (self.batch_size, -1, 640))
 
             prediction = self.predictions(frames)
+            loss = tf.nn.softmax_cross_entropy_with_logits(logits=prediction, labels=labels)
+            cross_entropy_mean = tf.reduce_mean(loss, name='cross_entropy')
+            optimizer = tf.train.AdamOptimizer(self.learning_rate).minimize(cross_entropy_mean)
 
         with tf.Session(graph=g) as sess:
+            num_batches = int(np.ceil(self.sample_num / (self.batch_size)))
+            sess.run(tf.global_variables_initializer())
             sess.run(iter_train.initializer)
             for _ in range(self.epochs):
-                for _ in range(self.sample_num // self.batch_size):
-                    out_frame, out_label, out_subject_id = sess.run([frames, labels, subject_ids])
-                    print(out_label, out_subject_id)
-                    print(out_frame.shape, out_label.shape)
-                print("**********************")
+                for _ in range(num_batches):
+                    _, loss_value = sess.run([optimizer, cross_entropy_mean])
+                    print("loss: ", loss_value)
