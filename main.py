@@ -2,6 +2,7 @@ import tensorflow as tf
 from pathlib import Path
 from data_provider import DataProvider
 from train_and_eval import TrainEval
+from cnn_model import CNNModel
 
 
 class AttentionNet:
@@ -11,6 +12,13 @@ class AttentionNet:
         self.batch_size = 2
         self.epochs = 2
         self.num_classes = 3
+
+    def _reshape_to_conv(self, frames):
+        frame_shape = frames.get_shape().as_list()
+        num_featurs = frame_shape[-1]
+        batch = -1
+        frames = tf.reshape(frames, (batch, num_featurs))
+        return frames
 
     def get_data_provider(self):
         self.data_provider = DataProvider(self.tfrecords_folder, self.batch_size, self.epochs)
@@ -29,13 +37,22 @@ class AttentionNet:
                     print(out_frame.shape, out_label.shape)
                 print("**********************")
 
-    def get_model(self):
-        pass
+    def get_model(self, frames):
+        frames = self._reshape_to_conv(frames)
+        cnn = CNNModel()
+        cnn_output = cnn.create_model(frames)
+        output_model = self._reshape_to_rnn(audio)
+        rnn = RNNModel().create_model(output_model)
+        # rnn = rnn[:, -1, :]
+        attention = AttentionModel(self.batch_size).create_model(rnn)
+        num_outputs = self.data_provider.num_classes
+        outputs = fully_connected(attention, num_outputs)
+        return outputs
 
     def start_process(self):
-        prediction = self.get_model()
+        predictions = self.get_model
         self.get_data_provider()
-        train_class = TrainEval(self.data_provider, prediction, self.batch_size, self.epochs,
+        train_class = TrainEval(self.data_provider, predictions, self.batch_size, self.epochs,
                                 self.num_classes, self.sample_num)
         train_class.start_training()
 
