@@ -6,11 +6,13 @@ from cnn_model import CNNModel
 from rnn_model import RNNModel
 from attention_model import AttentionModel
 from fc_model import FCModel
+from evaluation import Evaluation
 
 class AttentionNet:
 
     def __init__(self):
         self.tfrecords_folder = Path('./data_folder/sample_tfrecords')
+        self.eval_tfrecords_folder = Path('./data_folder/devel_tfrecords')
         self.batch_size = 2
         self.epochs = 2
         self.num_classes = 3
@@ -32,6 +34,8 @@ class AttentionNet:
     def get_data_provider(self):
         self.data_provider = DataProvider(self.tfrecords_folder, self.batch_size, self.epochs)
         self.sample_num = self.data_provider.sample_num
+        self.eval_provider = Evaluation(self.eval_tfrecords_folder, self.batch_size, self.epochs)
+        self.eval_sample_num = self.eval_provider.sample_num
 
     def read_data(self):
         self.data_provider.get_batch()
@@ -64,7 +68,8 @@ class AttentionNet:
         predictions = self.get_model
         self.get_data_provider()
         train_class = TrainEval(self.data_provider, predictions, self.batch_size, self.epochs,
-                                self.num_classes, self.sample_num, self.learning_rate)
+                                self.num_classes, self.sample_num, self.learning_rate, self.eval_provider,
+                                self.eval_sample_num)
         train_class.start_training()
 
 
