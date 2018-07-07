@@ -1,5 +1,6 @@
 import tensorflow as tf
 import numpy as np
+import time
 
 class TrainEval():
 
@@ -48,9 +49,12 @@ class TrainEval():
             for epoch in range(self.epochs):
                 print('\n Start Training for epoch {}\n'.format(epoch + 1))
                 sess.run(iter_train)
-                for _ in range(train_num_batches):
+                for batch in range(train_num_batches):
+                    start_time = time.time()
                     _, loss_value = sess.run([optimizer, cross_entropy_mean])
-                    print("loss: ", loss_value)
+                    time_step = time.time() - start_time
+                    print("Epoch {}/{}: Batch {}/{}: loss = {:.4f} ({:.2f} sec/step)".format(
+                        epoch + 1, self.epochs, batch + 1, train_num_batches, loss_value, time_step))
 
                 print('\n Start Validation for epoch {}\n'.format(epoch + 1))
                 sess.run(iter_eval)

@@ -16,7 +16,7 @@ class AttentionNet:
         self.batch_size = 2
         self.epochs = 2
         self.num_classes = 3
-        self.learning_rate = 0.0001
+        self.learning_rate = 1e-5
 
     def _reshape_to_conv(self, frames):
         frame_shape = frames.get_shape().as_list()
