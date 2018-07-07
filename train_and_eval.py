@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 import time
+from sklearn.metrics import recall_score
 
 class TrainEval():
 
@@ -60,8 +61,7 @@ class TrainEval():
                 sess.run(iter_eval)
                 eval_predictions_list = []
                 eval_labels_list = []
-                #for batch in range(eval_num_batches):
-                for batch in range(5):
+                for batch in range(eval_num_batches):
                     print('Example {}/{}'.format(batch + 1, eval_num_batches))
                     preds, labs, s = sess.run([eval_prediction, labels, subject_ids])
                     eval_predictions_list.append(preds)
@@ -72,10 +72,13 @@ class TrainEval():
                 eval_predictions_list = np.argmax(eval_predictions_list, axis=1)
                 eval_labels_list = np.argmax(eval_labels_list, axis=1)
 
+                '''
                 correct = 0
                 for i in range(len(eval_predictions_list)):
                     if eval_predictions_list[i] == eval_labels_list[i]:
                         correct += 1
                 accuracy = float(correct) / float(self.eval_sample_num)
                 print("accuracy = ",accuracy)
-                
+                '''
+                mean_eval = recall_score(eval_labels_list, eval_predictions_list, average="macro")
+                print("uar: ", mean_eval)
