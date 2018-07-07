@@ -3,6 +3,8 @@ import numpy as np
 import time
 from sklearn.metrics import recall_score
 
+slim = tf.contrib.slim
+
 class TrainEval():
 
     def __init__(self, data_provider, predictions, batch_size, epochs, num_classes, sample_num, learning_rate,
@@ -38,8 +40,11 @@ class TrainEval():
 
             prediction = self.predictions(frames)
             eval_prediction = self.predictions(frames)
-            loss = tf.nn.softmax_cross_entropy_with_logits(logits=prediction, labels=labels)
-            cross_entropy_mean = tf.reduce_mean(loss, name='cross_entropy')
+            #loss = tf.nn.softmax_cross_entropy_with_logits(logits=prediction, labels=labels)
+            loss = tf.nn.weighted_cross_entropy_with_logits(labels, prediction,
+                                                            pos_weight=1)
+            #cross_entropy_mean = tf.reduce_mean(loss, name='cross_entropy')
+            cross_entropy_mean = slim.losses.compute_weighted_loss(loss)
             optimizer = tf.train.AdamOptimizer(self.learning_rate).minimize(cross_entropy_mean)
 
         with tf.Session(graph=g) as sess:
