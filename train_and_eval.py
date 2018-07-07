@@ -58,11 +58,24 @@ class TrainEval():
 
                 print('\n Start Validation for epoch {}\n'.format(epoch + 1))
                 sess.run(iter_eval)
-                evaluated_predictions = []
-                evaluated_labels = []
-                for batch in range(eval_num_batches):
+                eval_predictions_list = []
+                eval_labels_list = []
+                #for batch in range(eval_num_batches):
+                for batch in range(5):
                     print('Example {}/{}'.format(batch + 1, eval_num_batches))
                     preds, labs, s = sess.run([eval_prediction, labels, subject_ids])
-                    out_labels = np.argmax(labs, axis=1)
-                    out_predictions = np.argmax(preds, axis=1)
-                    print(out_predictions, out_labels, s)
+                    eval_predictions_list.append(preds)
+                    eval_labels_list.append(labs)
+
+                eval_predictions_list = np.reshape(eval_predictions_list, (-1, self.num_classes))
+                eval_labels_list = np.reshape(eval_labels_list, (-1, self.num_classes))
+                eval_predictions_list = np.argmax(eval_predictions_list, axis=1)
+                eval_labels_list = np.argmax(eval_labels_list, axis=1)
+
+                correct = 0
+                for i in range(len(eval_predictions_list)):
+                    if eval_predictions_list[i] == eval_labels_list[i]:
+                        correct += 1
+                accuracy = float(correct) / float(self.eval_sample_num)
+                print("accuracy = ",accuracy)
+                
