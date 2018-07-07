@@ -18,11 +18,16 @@ class TrainEval():
             tf.set_random_seed(3) # set random seed for initialization
 
             self.data_provider.get_batch()
-            iter_train = self.data_provider.dataset.make_initializable_iterator()
-            frames, labels, subject_ids = iter_train.get_next()
+            #iter_train = self.data_provider.dataset.make_initializable_iterator()
+            iterator = tf.data.Iterator.from_structure(output_shapes=self.data_provider.dataset.output_shapes,
+                                                       output_types=self.data_provider.dataset.output_types)
+            frames, labels, subject_ids = iterator.get_next()
+
             labels = tf.one_hot(labels, depth=3, axis=-1)
             labels = tf.reshape(labels, (self.batch_size, self.num_classes))
             frames = tf.reshape(frames, (self.batch_size, -1, 640))
+
+            iter_train = iterator.make_initializer(self.data_provider.dataset)
 
             prediction = self.predictions(frames)
             loss = tf.nn.softmax_cross_entropy_with_logits(logits=prediction, labels=labels)
@@ -32,8 +37,9 @@ class TrainEval():
         with tf.Session(graph=g) as sess:
             num_batches = int(np.ceil(self.sample_num / (self.batch_size)))
             sess.run(tf.global_variables_initializer())
-            sess.run(iter_train.initializer)
+
             for _ in range(self.epochs):
+                sess.run(iter_train)
                 for _ in range(num_batches):
                     _, loss_value = sess.run([optimizer, cross_entropy_mean])
                     print("loss: ", loss_value)

@@ -15,7 +15,7 @@ class DataProvider():
         dataset = tf.data.TFRecordDataset(self.paths)
         dataset = dataset.map(self.parse_example)
         padded_shapes = ([None], [1], [])
-        self.dataset = dataset.repeat(self.epochs).padded_batch(self.batch_size, padded_shapes=padded_shapes)
+        self.dataset = dataset.padded_batch(self.batch_size, padded_shapes=padded_shapes)
 
     def parse_example(self, serialized_example):
         features = tf.parse_single_example(
