@@ -11,7 +11,7 @@ from evaluation import Evaluation
 class AttentionNet:
 
     def __init__(self):
-        self.tfrecords_folder = Path('./data_folder/sample_tfrecords')
+        self.tfrecords_folder = Path('./data_folder/train_tfrecords')
         self.eval_tfrecords_folder = Path('./data_folder/devel_tfrecords')
         self.batch_size = 2
         self.epochs = 2
@@ -53,7 +53,7 @@ class AttentionNet:
     def get_model(self, frames):
         frames = self._reshape_to_conv(frames)
         cnn = CNNModel()
-        cnn_output = cnn.create_model(frames)
+        cnn_output = cnn.create_model_2(frames, 40, True)
         cnn_output = self._reshape_to_rnn(cnn_output)
         rnn = RNNModel()
         rnn_output = rnn.create_model(cnn_output)
