@@ -3,7 +3,6 @@ import numpy as np
 import time
 from sklearn.metrics import recall_score
 
-slim = tf.contrib.slim
 
 class TrainEval():
 
@@ -26,7 +25,7 @@ class TrainEval():
 
             self.data_provider.get_batch()
             self.eval_provider.get_batch()
-            #iter_train = self.data_provider.dataset.make_initializable_iterator()
+
             iterator = tf.data.Iterator.from_structure(output_shapes=self.data_provider.dataset.output_shapes,
                                                        output_types=self.data_provider.dataset.output_types)
             frames, labels, subject_ids = iterator.get_next()
@@ -41,10 +40,10 @@ class TrainEval():
             prediction = self.predictions(frames)
             eval_prediction = self.predictions(frames)
             loss = tf.nn.softmax_cross_entropy_with_logits(logits=prediction, labels=labels)
-            #loss = tf.nn.weighted_cross_entropy_with_logits(labels, prediction,pos_weight=1)
             cross_entropy_mean = tf.reduce_mean(loss, name='cross_entropy')
-            #cross_entropy_mean = slim.losses.compute_weighted_loss(loss)
             optimizer = tf.train.AdamOptimizer(self.learning_rate).minimize(cross_entropy_mean)
+
+            writer = tf.summary.FileWriter("./graphs", graph=g)
 
         with tf.Session(graph=g) as sess:
             train_num_batches = int(np.ceil(self.sample_num / (self.batch_size)))
@@ -76,13 +75,7 @@ class TrainEval():
                 eval_predictions_list = np.argmax(eval_predictions_list, axis=1)
                 eval_labels_list = np.argmax(eval_labels_list, axis=1)
 
-                '''
-                correct = 0
-                for i in range(len(eval_predictions_list)):
-                    if eval_predictions_list[i] == eval_labels_list[i]:
-                        correct += 1
-                accuracy = float(correct) / float(self.eval_sample_num)
-                print("accuracy = ",accuracy)
-                '''
                 mean_eval = recall_score(eval_labels_list, eval_predictions_list, average="macro")
                 print("uar: ", mean_eval)
+
+        writer.close()

@@ -50,10 +50,7 @@ class CNNModel():
 
         return net
 
-    def create_model_2(self,
-                     frames:tf.Tensor,
-                     conv_filters:int = 40,
-                     is_training: bool = True):
+    def create_model_2(self, frames:tf.Tensor, conv_filters:int = 40, is_training: bool = True):
         with tf.variable_scope("audio_model", reuse=tf.AUTO_REUSE):
             batch_size, num_features = frames.get_shape().as_list()
             shape = ([-1, 1, num_features, 1])
