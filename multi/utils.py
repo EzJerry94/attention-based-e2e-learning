@@ -1,6 +1,5 @@
 import numpy as np
-import wave
-import pylab as pl
+
 
 def preprocess_stats(file, csv_name):
     lines = np.loadtxt(file, dtype='str', usecols=(0,2,3,4))
@@ -24,6 +23,7 @@ def change_stats_to_int(attribute):
         attribute = 3
     return attribute
 
+'''
 def show_wav(file):
     f = wave.open(file, "rb")
     params = f.getparams()
@@ -37,3 +37,4 @@ def show_wav(file):
     time = np.arange(0, nframes) * (1.0 / framerate)
     pl.plot(time, wave_data)
     pl.show()
+'''
