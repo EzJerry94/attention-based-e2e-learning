@@ -5,7 +5,7 @@ from tfrecord_generator import Generator
 class MultiTaskNet():
 
     def __init__(self):
-        self.validation_csv = './data/validation_set.csv'
+        self.validation_csv = './data/multi_file.csv'
 
     def read_stats(self):
         utils.preprocess_stats('./IEMOCAP_full_releaseA/test_set.txt','test_set.csv')
