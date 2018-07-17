@@ -8,7 +8,7 @@ class Generator():
 
     def __init__(self, csv):
         self.csv = csv
-        self.tfrecords_file = './data/validation_set.tfrecords'
+        self.tfrecords_file = './data/train_set.tfrecords'
 
     def _int_feature(self, value):
         return tf.train.Feature(int64_list=tf.train.Int64List(value=[value]))
@@ -25,12 +25,12 @@ class Generator():
         return end_time
 
     def get_samples(self, data_file):
-        time = self.dict_files[data_file]['time']
+        #time = self.dict_files[data_file]['time']
         audio_clip = AudioFileClip(data_file)
         clip = audio_clip.set_fps(16000)
-        num_samples = int(clip.fps * time)
+        #num_samples = int(clip.fps * time)
         data_frame = np.array(list(clip.subclip(0).iter_frames()))
-        data_frame = data_frame.mean(1)[:num_samples]
+        data_frame = data_frame.mean(1)
         chunk_size = 640 # split audio file to chuncks of 40ms
         audio = np.pad(data_frame, (0, chunk_size - data_frame.shape[0] % chunk_size), 'constant')
         audio = np.reshape(audio, (-1, chunk_size)).astype(np.float32)
@@ -40,10 +40,9 @@ class Generator():
         self.read_csv(self.csv)
         self.dict_files = dict()
         for row in self.data:
-            print('Get duration of file : {}'.format(row[0]))
-            time = self.read_single_data_time(row[0])
+            #print('Get duration of file : {}'.format(row[0]))
+            #time = self.read_single_data_time(row[0])
             self.dict_files[row[0]] = {'file': row[0],
-                                       'time': np.float32(time),
                                        'arousal': np.int32(row[1]),
                                        'valence': np.int32(row[2]),
                                        'dominance': np.int32(row[3])}
