@@ -23,18 +23,6 @@ def change_stats_to_int(attribute):
         attribute = 3
     return attribute
 
-'''
 def show_wav(file):
-    f = wave.open(file, "rb")
-    params = f.getparams()
-    nchannels, sampwidth, framerate, nframes = params[:4]
-    print(params)
-    str_data = f.readframes(nframes)
-    f.close()
+    pass
 
-    wave_data = np.fromstring(str_data, dtype=np.short)
-    print(wave_data)
-    time = np.arange(0, nframes) * (1.0 / framerate)
-    pl.plot(time, wave_data)
-    pl.show()
-'''

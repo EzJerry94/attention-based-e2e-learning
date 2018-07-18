@@ -5,7 +5,7 @@ from tfrecord_generator import Generator
 class MultiTaskNet():
 
     def __init__(self):
-        self.validation_csv = './data/train_set.csv'
+        pass
 
     def read_stats(self):
         utils.preprocess_stats('./IEMOCAP_full_releaseA/test_set.txt','test_set.csv')
@@ -21,9 +21,6 @@ class MultiTaskNet():
 
 def main():
     multi_task_net = MultiTaskNet()
-    #multi_task_net.read_stats()
-    #multi_task_net.show_wav()
-    multi_task_net.generate_tfrecords()
 
 if __name__ == '__main__':
     main()
