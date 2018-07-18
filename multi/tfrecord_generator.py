@@ -8,7 +8,7 @@ class Generator():
 
     def __init__(self, csv):
         self.csv = csv
-        self.tfrecords_file = './data/train_set.tfrecords'
+        self.tfrecords_file = './data/multi_set.tfrecords'
 
     def _int_feature(self, value):
         return tf.train.Feature(int64_list=tf.train.Int64List(value=[value]))

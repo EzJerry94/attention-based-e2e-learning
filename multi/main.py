@@ -1,11 +1,19 @@
-#import tensorflow as tf
 import utils
+import tensorflow as tf
 from tfrecord_generator import Generator
+from pathlib import Path
+from data_provider import DataProvider
+from train_and_eval import TrainEval
 
 class MultiTaskNet():
 
     def __init__(self):
-        pass
+        self.validation_csv = './data/multi_file.csv'
+        self.train_tfrecords = './data/train_set.tfrecords'
+        self.batch_size = 2
+        self.num_classes = 3
+        self.learning_rate = 1e-4
+        self.epochs = 1
 
     def read_stats(self):
         utils.preprocess_stats('./IEMOCAP_full_releaseA/test_set.txt','test_set.csv')
@@ -19,8 +27,18 @@ class MultiTaskNet():
         generator = Generator(self.validation_csv)
         generator.write_tfrecords()
 
+    def get_data_provider(self):
+        self.train_data_provider = DataProvider(self.train_tfrecords, self.batch_size, self.epochs)
+
+    def start_process(self):
+        self.get_data_provider()
+        train_class = TrainEval(self.train_data_provider, self.epochs, self.batch_size)
+        train_class.start_training()
+
+
 def main():
     multi_task_net = MultiTaskNet()
+    multi_task_net.start_process()
 
 if __name__ == '__main__':
     main()
