@@ -26,7 +26,7 @@ class TrainEval():
             iter_train = iterator.make_initializer(self.train_data_provider.dataset)
 
         with tf.Session(graph=g) as sess:
-            train_num_batches = int(np.ceil(self.sample_num / (self.batch_size)))
+            train_num_batches = int(self.sample_num / (self.batch_size))
             sess.run(tf.global_variables_initializer())
 
             for epoch in range(self.epochs):
