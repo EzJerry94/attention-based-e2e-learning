@@ -38,8 +38,8 @@ class MultiTaskNet():
 
 def main():
     multi_task_net = MultiTaskNet()
-    multi_task_net.start_process()
-    #multi_task_net.generate_tfrecords()
+    #multi_task_net.start_process()
+    multi_task_net.generate_tfrecords()
 
 if __name__ == '__main__':
     main()
