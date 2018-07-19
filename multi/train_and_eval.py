@@ -5,11 +5,12 @@ from sklearn.metrics import recall_score
 
 class TrainEval():
 
-    def __init__(self, train_data_provider, epochs, batch_size):
+    def __init__(self, train_data_provider, epochs, batch_size, num_classes):
         self.train_data_provider = train_data_provider
         self.epochs = epochs
         self.batch_size = batch_size
         self.sample_num = 6409
+        self.num_classes = num_classes
 
     def start_training(self):
         g = tf.Graph()
@@ -26,6 +27,10 @@ class TrainEval():
             arousals = tf.one_hot(arousals, depth=3, axis=-1)
             valences = tf.one_hot(valences, depth=3, axis=-1)
             dominances = tf.one_hot(dominances, depth=3, axis=-1)
+            arousals = tf.reshape(arousals, (self.batch_size, self.num_classes))
+            valences = tf.reshape(valences, (self.batch_size, self.num_classes))
+            dominances = tf.reshape(dominances, (self.batch_size, self.num_classes))
+            frames = tf.reshape(frames, (self.batch_size, -1, 640))
 
             iter_train = iterator.make_initializer(self.train_data_provider.dataset)
 

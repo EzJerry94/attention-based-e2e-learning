@@ -32,14 +32,13 @@ class MultiTaskNet():
 
     def start_process(self):
         self.get_data_provider()
-        train_class = TrainEval(self.train_data_provider, self.epochs, self.batch_size)
+        train_class = TrainEval(self.train_data_provider, self.epochs, self.batch_size, self.num_classes)
         train_class.start_training()
 
 
 def main():
     multi_task_net = MultiTaskNet()
-    #multi_task_net.start_process()
-    multi_task_net.generate_tfrecords()
+    multi_task_net.start_process()
 
 if __name__ == '__main__':
     main()
