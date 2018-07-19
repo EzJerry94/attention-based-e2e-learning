@@ -16,11 +16,11 @@ def preprocess_stats(file, csv_name):
 
 def change_stats_to_int(attribute):
     if attribute == 'pos':
-        attribute = 1
+        attribute = 0
     elif attribute == 'neg':
-        attribute = 2
+        attribute = 1
     elif attribute == 'neu':
-        attribute = 3
+        attribute = 2
     return attribute
 
 def show_wav(file):

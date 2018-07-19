@@ -8,7 +8,7 @@ from train_and_eval import TrainEval
 class MultiTaskNet():
 
     def __init__(self):
-        self.validation_csv = './data/multi_file.csv'
+        self.validation_csv = './data/train_set.csv'
         self.train_tfrecords = './data/train_set.tfrecords'
         self.batch_size = 2
         self.num_classes = 3
@@ -39,6 +39,7 @@ class MultiTaskNet():
 def main():
     multi_task_net = MultiTaskNet()
     multi_task_net.start_process()
+    #multi_task_net.generate_tfrecords()
 
 if __name__ == '__main__':
     main()

@@ -23,6 +23,10 @@ class TrainEval():
 
             files, arousals, valences, dominances, frames = iterator.get_next()
 
+            arousals = tf.one_hot(arousals, depth=3, axis=-1)
+            valences = tf.one_hot(valences, depth=3, axis=-1)
+            dominances = tf.one_hot(dominances, depth=3, axis=-1)
+
             iter_train = iterator.make_initializer(self.train_data_provider.dataset)
 
         with tf.Session(graph=g) as sess:
