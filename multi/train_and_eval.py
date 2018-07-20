@@ -5,11 +5,13 @@ from sklearn.metrics import recall_score
 
 class TrainEval():
 
-    def __init__(self, train_data_provider, epochs, batch_size, num_classes):
+    def __init__(self, train_data_provider, epochs, batch_size, num_classes, validation_data_provider):
         self.train_data_provider = train_data_provider
+        self.validation_data_provider = validation_data_provider
         self.epochs = epochs
         self.batch_size = batch_size
-        self.sample_num = 6409
+        self.train_sample_num = 6409
+        self.validation_sample_num = 1811
         self.num_classes = num_classes
 
     def start_training(self):
@@ -18,6 +20,7 @@ class TrainEval():
             tf.set_random_seed(3)
 
             self.train_data_provider.get_batch()
+            self.validation_data_provider.get_batch()
 
             iterator = tf.data.Iterator.from_structure(output_shapes=self.train_data_provider.dataset.output_shapes,
                                                        output_types=self.train_data_provider.dataset.output_types)
@@ -35,7 +38,7 @@ class TrainEval():
             iter_train = iterator.make_initializer(self.train_data_provider.dataset)
 
         with tf.Session(graph=g) as sess:
-            train_num_batches = int(self.sample_num / (self.batch_size))
+            train_num_batches = int(self.train_sample_num / (self.batch_size))
             sess.run(tf.global_variables_initializer())
 
             for epoch in range(self.epochs):

@@ -10,6 +10,7 @@ class MultiTaskNet():
     def __init__(self):
         self.validation_csv = './data/train_set.csv'
         self.train_tfrecords = './data/train_set.tfrecords'
+        self.validation_tfrecords = './data/validation_set.tfrecords'
         self.batch_size = 2
         self.num_classes = 3
         self.learning_rate = 1e-4
@@ -29,10 +30,12 @@ class MultiTaskNet():
 
     def get_data_provider(self):
         self.train_data_provider = DataProvider(self.train_tfrecords, self.batch_size, self.epochs)
+        self.validation_data_provider = DataProvider(self.validation_tfrecords, self.batch_size, self.epochs)
 
     def start_process(self):
         self.get_data_provider()
-        train_class = TrainEval(self.train_data_provider, self.epochs, self.batch_size, self.num_classes)
+        train_class = TrainEval(self.train_data_provider, self.epochs, self.batch_size, self.num_classes,
+                                self.validation_data_provider)
         train_class.start_training()
 
 
