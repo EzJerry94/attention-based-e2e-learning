@@ -52,7 +52,7 @@ class MultiTaskNet():
     def get_model(self, frames):
         frames = self._reshape_to_conv(frames)
         cnn = CNNModel()
-        cnn_output = cnn.create_model_2(frames, 40, True)
+        cnn_output = cnn.create_model(frames, 40, True)
         cnn_output = self._reshape_to_rnn(cnn_output)
         rnn = RNNModel()
         rnn_output = rnn.create_model(cnn_output)
