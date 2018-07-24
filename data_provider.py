@@ -3,14 +3,16 @@ import tensorflow as tf
 
 class DataProvider():
 
-    def __init__(self, tfrecords_file, batch_size):
+    def __init__(self, tfrecords_file, batch_size, is_shuffle):
         self.tfrecords_file = tfrecords_file
         self.batch_size = batch_size
+        self.is_shuffle = is_shuffle
 
     def get_batch(self):
         dataset = tf.data.TFRecordDataset(self.tfrecords_file)
         dataset = dataset.map(self.parse_example)
-        dataset = dataset.shuffle(buffer_size=10000)
+        if self.is_shuffle:
+            dataset = dataset.shuffle(buffer_size=10000)
         padded_shapes = ([None], [1])
         self.dataset = dataset.padded_batch(self.batch_size, padded_shapes=padded_shapes)
 

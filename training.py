@@ -1,10 +1,13 @@
 import tensorflow as tf
+import numpy as np
+import time
+from sklearn.metrics import recall_score
 
 
 class Train():
 
     def __init__(self, train_data_provider, validate_data_provider, batch_size, epochs, num_classes,
-                 learning_rate):
+                 learning_rate, predictions):
         self.train_data_provider = train_data_provider
         self.validate_data_provider = validate_data_provider
         self.batch_size = batch_size
@@ -13,6 +16,7 @@ class Train():
         self.learning_rate = learning_rate
         self.train_sample_num = 4650
         self.validate_sample_num = 895
+        self.predictions = predictions
 
     def start_training(self):
         g = tf.Graph()
@@ -33,6 +37,12 @@ class Train():
             iter_train = iterator.make_initializer(self.train_data_provider.dataset)
             iter_eval = iterator.make_initializer(self.validate_data_provider.dataset)
 
+            train_prediction = self.predictions(frames)
+            #validate_prediction = self.predictions(frames)
+            loss = tf.nn.softmax_cross_entropy_with_logits(logits=train_prediction, labels=labels)
+            cross_entropy_mean = tf.reduce_mean(loss, name='cross_entropy')
+            optimizer = tf.train.AdamOptimizer(self.learning_rate).minimize(cross_entropy_mean)
+
         with tf.Session(graph=g) as sess:
             train_num_batches = int(self.train_sample_num / self.batch_size)
             validate_num_batches = int(self.validate_sample_num / self.batch_size)
@@ -42,7 +52,8 @@ class Train():
                 print('\n Start Training for epoch {}\n'.format(epoch + 1))
                 sess.run(iter_train)
                 for batch in range(train_num_batches):
-                    frames_out, labels_out = sess.run([frames, labels])
-                    print(frames_out)
-                    print(labels_out)
-                    print("*************************************8")
+                    start_time = time.time()
+                    _, loss_value = sess.run([optimizer, cross_entropy_mean])
+                    time_step = time.time() - start_time
+                    print("Epoch {}/{}: Batch {}/{}: loss = {:.4f} ({:.2f} sec/step)".format(
+                        epoch + 1, self.epochs, batch + 1, train_num_batches, loss_value, time_step))
