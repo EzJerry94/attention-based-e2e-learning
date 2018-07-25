@@ -5,6 +5,7 @@ from data_provider import DataProvider
 from models.cnn import CNN
 from models.rnn import RNN
 from models.fc import FC
+from models.attention import Attention
 from evaluation import Evaluation
 
 class AttentionNet:
@@ -17,6 +18,7 @@ class AttentionNet:
         self.epochs = 2
         self.num_classes = 3
         self.learning_rate = 1e-4
+        self.is_attention = True
 
     def _reshape_to_conv(self, frames):
         frame_shape = frames.get_shape().as_list()
@@ -52,9 +54,15 @@ class AttentionNet:
         cnn_output = self._reshape_to_rnn(cnn_output)
         rnn = RNN()
         rnn_output = rnn.create_model(cnn_output)
-        rnn_output = rnn_output[:, -1, :]
-        fc = FC(self.num_classes)
-        outputs = fc.create_model(rnn_output)
+        if self.is_attention:
+            attention = Attention(self.batch_size)
+            attention_output = attention.create_model(rnn_output)
+            fc = FC(self.num_classes)
+            outputs = fc.create_model(attention_output)
+        else:
+            rnn_output = rnn_output[:, -1, :]
+            fc = FC(self.num_classes)
+            outputs = fc.create_model(rnn_output)
         return outputs
 
     def evaluation(self):
