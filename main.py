@@ -40,7 +40,7 @@ class AttentionNet:
 
     def training(self):
         predictions = self.get_predictions
-        train = Train(self.train_data_provider, self.validate_data_provider, self.batch_size, self.epochs,
+        train = Train(self.train_data_provider, self.batch_size, self.epochs,
                       self.num_classes, self.learning_rate, predictions)
         train.start_training()
 
