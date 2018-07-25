@@ -5,11 +5,12 @@ from data_provider import DataProvider
 from models.cnn import CNN
 from models.rnn import RNN
 from models.fc import FC
+from evaluation import Evaluation
 
 class AttentionNet:
 
     def __init__(self):
-        self.operation = 'training'
+        self.operation = 'evaluation'
         self.train_tfrecords_folder = './data/train_set.tfrecords'
         self.validate_tfrecords_folder = './data/devel_set.tfrecords'
         self.batch_size = 2
@@ -56,6 +57,12 @@ class AttentionNet:
         outputs = fc.create_model(rnn_output)
         return outputs
 
+    def evaluation(self):
+        predictions = self.get_predictions
+        eval = Evaluation(self.validate_data_provider, self.batch_size, self.epochs,
+                          self.num_classes, self.learning_rate, predictions)
+        eval.start_evaluation()
+
 
 def main():
     net = AttentionNet()
@@ -64,6 +71,9 @@ def main():
     elif net.operation == 'training':
         net.get_data_provider()
         net.training()
+    elif net.operation == 'evaluation':
+        net.get_data_provider()
+        net.evaluation()
 
 if __name__ == '__main__':
     main()
